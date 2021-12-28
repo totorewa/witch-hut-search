@@ -20,4 +20,15 @@ public class DoublePerlinNoise
             len--;
         Amplitude = 10d / 6d * len / (len + 1);
     }
+
+    public double Sample(double x, double y, double z)
+    {
+        const double f = 337.0 / 331.0;
+        var v = 0d;
+
+        v += OctA.Sample(x, y, z);
+        v += OctB.Sample(x * f, y * f, z * f);
+
+        return v * Amplitude;
+    }
 }

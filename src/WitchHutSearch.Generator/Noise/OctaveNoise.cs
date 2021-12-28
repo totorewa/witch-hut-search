@@ -30,6 +30,18 @@ public class OctaveNoise
         }
     }
 
+    public double Sample(double x, double y, double z)
+        => (from pn in Octaves
+            let lf = pn.Lacunarity
+            let ax = MaintainPrecision(x * lf)
+            let ay = MaintainPrecision(y * lf)
+            let az = MaintainPrecision(z * lf)
+            let pv = pn.Sample(ax, ay, az, 0, 0)
+            select pn.Amplitude * pv).Sum();
+
+    private static double MaintainPrecision(double x)
+        => x - Math.Floor(x / 33554432.0 + 0.5) * 33554432.0;
+
     private static readonly ulong[,] Md5OctaveN =
     {
         { 0xb198de63a8012672, 0x7b84cad43ef7b5a8 }, // md5 "octave_-12"

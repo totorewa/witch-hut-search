@@ -1,8 +1,8 @@
 ﻿namespace WitchHutSearch.Generator.Layers;
 
-public class ConstantSpline
+public class ConstantSpline : Spline
 {
-    public virtual float Value { get; } = 0.0f;
+    public float Value { get; } = 0.0f;
 
     protected ConstantSpline()
     {
@@ -11,5 +11,10 @@ public class ConstantSpline
     public ConstantSpline(float value)
     {
         Value = value;
+    }
+
+    public override float Get(Span<float> values)
+    {
+        return Value;
     }
 }

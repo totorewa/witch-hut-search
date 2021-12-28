@@ -1,17 +1,10 @@
 ﻿namespace WitchHutSearch.Generator.Layers;
 
-public class Spline : ConstantSpline
+public abstract class Spline
 {
-    public SplineType Type { get; set; }
-    public List<SplineValue> Values { get; } = new(12);
-
-    public void AddValue(float loc, float value, float derivative = 0.0f)
-        => AddValue(loc, new ConstantSpline(value), derivative);
-
-    public void AddValue(float loc, ConstantSpline value, float derivative = 0.0f)
-        => Values.Add(new SplineValue { Value = value, Location = loc, Derivative = derivative });
-
-    public static Spline CreateLandSpline(float f, float g, float h, float i, float j, float k, bool bl)
+    public abstract float Get(Span<float> values);
+    
+    public static NestedSpline CreateLandSpline(float f, float g, float h, float i, float j, float k, bool bl)
     {
         var sp1 = CreateRidgeSpline((float)McMath.Lerp(i, 0.6f, 1.5f), bl);
         var sp2 = CreateRidgeSpline((float)McMath.Lerp(i, 0.6f, 1.0f), bl);
@@ -22,13 +15,13 @@ public class Spline : ConstantSpline
         var sp6 = CreateRidgeSpline(f, j, j, g, h, 0.5f);
         var sp7 = CreateRidgeSpline(f, j, j, g, h, 0.5f);
 
-        var sp8 = new Spline { Type = SplineType.Ridges };
+        var sp8 = new NestedSpline { Type = SplineType.Ridges };
         sp8.AddValue(-1.0f, f);
         sp8.AddValue(-0.4f, sp6);
         sp8.AddValue(0.0f, h + 0.07f);
 
         var sp9 = CreateRidgeSpline(-0.02f, k, k, g, h, 0.0f);
-        var sp = new Spline { Type = SplineType.Erosion };
+        var sp = new NestedSpline { Type = SplineType.Erosion };
         sp.AddValue(-0.85f, sp1);
         sp.AddValue(-0.7f, sp2);
         sp.AddValue(-0.4f, sp3);
@@ -47,9 +40,9 @@ public class Spline : ConstantSpline
         return sp;
     }
 
-    public static Spline CreateRidgeSpline(float f, bool bl)
+    public static NestedSpline CreateRidgeSpline(float f, bool bl)
     {
-        var sp = new Spline { Type = SplineType.Ridges };
+        var sp = new NestedSpline { Type = SplineType.Ridges };
 
         var i = GetOffsetValue(-1.0f, f);
         var k = GetOffsetValue(1.0f, f);
@@ -91,9 +84,9 @@ public class Spline : ConstantSpline
         return sp;
     }
 
-    public static Spline CreateRidgeSpline(float f, float g, float h, float i, float j, float k)
+    public static NestedSpline CreateRidgeSpline(float f, float g, float h, float i, float j, float k)
     {
-        var sp = new Spline { Type = SplineType.Ridges };
+        var sp = new NestedSpline { Type = SplineType.Ridges };
 
         var l = 0.5f * (g - f);
         if (l < k) l = k;
@@ -120,11 +113,4 @@ public class Spline : ConstantSpline
 
         return off > 0 ? off : 0; // clamp
     }
-}
-
-public class SplineValue
-{
-    public float Location { get; set; }
-    public float Derivative { get; set; }
-    public ConstantSpline Value { get; set; }
 }

@@ -13,7 +13,7 @@ public class BiomeGenerator
     public DoublePerlinNoise Continentalness { get; set; }
     public DoublePerlinNoise Erosion { get; set; }
     public DoublePerlinNoise Weirdness { get; set; }
-    public Spline Spline { get; set; }
+    public NestedSpline Spline { get; set; }
     public int PreviousIdx { get; set; }
 
     public BiomeGenerator(ulong seed)
@@ -59,13 +59,48 @@ public class BiomeGenerator
         Weirdness = new DoublePerlinNoise(pxr, amp[30..], -7);
     }
 
-    private static Spline CreateBiomeNoise()
+    public int GetBiomeAtPos(Pos pos)
     {
-        var sp = new Spline();
-        var sp1 = Spline.CreateLandSpline(-0.15f, 0.00f, 0.0f, 0.1f, 0.00f, -0.03f, false);
-        var sp2 = Spline.CreateLandSpline(-0.10f, 0.03f, 0.1f, 0.1f, 0.01f, -0.03f, false);
-        var sp3 = Spline.CreateLandSpline(-0.10f, 0.03f, 0.1f, 0.7f, 0.01f, -0.03f, true);
-        var sp4 = Spline.CreateLandSpline(-0.05f, 0.03f, 0.1f, 1.0f, 0.01f, 0.01f, true);
+        const int y = 8;
+        pos = pos.ToChunkPos();
+        var px = Shift.Sample(pos.X, 0, pos.Z) * 4d;
+        var pz = Shift.Sample(pos.Z, pos.X, 0) * 4d;
+
+        var c = Continentalness.Sample(px, 0, pz);
+        var e = Erosion.Sample(px, 0, pz);
+        var w = Weirdness.Sample(px, 0, pz);
+
+        Span<float> npParam = stackalloc float[]
+        {
+            (float)c, (float)e, -3.0f * (Math.Abs(Math.Abs((float)w) - 0.6666667f) - 0.33333334f), (float)w
+        };
+        var off = Spline.Get(npParam) + 0.015f;
+        var d = 1.0 - (y << 2) / 128d - 83d / 160d + off;
+
+        var t = Temperature.Sample(px, 0, pz);
+        var h = Temperature.Sample(px, 0, pz);
+
+        Span<long> np = stackalloc long[]
+        {
+            (long)(t * 10000f),
+            (long)(h * 10000f),
+            (long)(c * 10000f),
+            (long)(e * 10000f),
+            (long)(d * 10000f),
+            (long)(w * 10000f),
+        };
+
+        // TODO rest
+        return 0;
+    }
+
+    private static NestedSpline CreateBiomeNoise()
+    {
+        var sp = new NestedSpline();
+        var sp1 = Layers.Spline.CreateLandSpline(-0.15f, 0.00f, 0.0f, 0.1f, 0.00f, -0.03f, false);
+        var sp2 = Layers.Spline.CreateLandSpline(-0.10f, 0.03f, 0.1f, 0.1f, 0.01f, -0.03f, false);
+        var sp3 = Layers.Spline.CreateLandSpline(-0.10f, 0.03f, 0.1f, 0.7f, 0.01f, -0.03f, true);
+        var sp4 = Layers.Spline.CreateLandSpline(-0.05f, 0.03f, 0.1f, 1.0f, 0.01f, 0.01f, true);
 
         sp.AddValue(-1.10f, 0.044f);
         sp.AddValue(-1.02f, -0.2222f);
