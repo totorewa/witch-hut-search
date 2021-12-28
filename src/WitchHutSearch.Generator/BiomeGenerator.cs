@@ -38,11 +38,11 @@ public class BiomeGenerator
         var sp3 = Spline.CreateLandSpline(-0.10f, 0.03f, 0.1f, 0.7f, 0.01f, -0.03f, true);
         var sp4 = Spline.CreateLandSpline(-0.05f, 0.03f, 0.1f, 1.0f, 0.01f, 0.01f, true);
 
-        sp.AddValue(-1.10f, Spline.CreateFixSpline(0.044f));
-        sp.AddValue(-1.02f, Spline.CreateFixSpline(-0.2222f));
-        sp.AddValue(-0.51f, Spline.CreateFixSpline(-0.2222f));
-        sp.AddValue(-0.44f, Spline.CreateFixSpline(-0.12f));
-        sp.AddValue(-0.18f, Spline.CreateFixSpline(-0.12f));
+        sp.AddValue(-1.10f, 0.044f);
+        sp.AddValue(-1.02f, -0.2222f);
+        sp.AddValue(-0.51f, -0.2222f);
+        sp.AddValue(-0.44f, -0.12f);
+        sp.AddValue(-0.18f, -0.12f);
         sp.AddValue(-0.16f, sp1);
         sp.AddValue(-0.15f, sp1);
         sp.AddValue(-0.10f, sp2);
