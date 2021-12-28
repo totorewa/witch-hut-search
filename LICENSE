@@ -1,0 +1,9 @@
+The source code in this repository contains work derivative of Cubiomes, of which is licensed under MIT. 
+The derivative work is contained in the src/WitchHutSearch.Generator directory.
+
+Cubiomes License (MIT):
+https://github.com/totorewa/WitchHutSearch.NET/LICENSE_cubiomes
+https://github.com/Cubitect/cubiomes/blob/v21.11.18/LICENSE
+
+The source code outside of the src/WitchHutSearch.Generator directory does not offer a license, 
+but is subject to change in the future.
