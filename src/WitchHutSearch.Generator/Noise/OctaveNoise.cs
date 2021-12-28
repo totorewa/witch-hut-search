@@ -2,14 +2,12 @@
 
 namespace WitchHutSearch.Generator.Noise;
 
-public struct OctaveNoise
+public class OctaveNoise
 {
-    public int OctCnt { get; set; } = 0;
-    public PerlinNoise Octaves { get; set; } = new();
+    public List<PerlinNoise> Octaves { get; set; } = new(4);
 
-    public OctaveNoise(Xoroshiro128 xr, PerlinNoise octaves, Span<double> amplitudes, int omin)
+    public OctaveNoise(Xoroshiro128 xr, Span<double> amplitudes, int omin)
     {
-        var n = 0;
         var lacuna = Math.Pow(2, omin);
         var persist = Math.Pow(2, amplitudes.Length - 1) / ((1L << amplitudes.Length) - 1d);
         var xlo = (ulong)xr.NextLong();
@@ -23,13 +21,12 @@ public struct OctaveNoise
             {
                 pxr.Lo = xlo ^ Md5OctaveN[12 + omin + i, 0];
                 pxr.Hi = xhi ^ Md5OctaveN[12 + omin + i, 1];
-                n++;
+                Octaves.Add(new PerlinNoise(pxr));
             }
 
             i++;
             lacuna *= 2.0;
             persist *= 0.5;
-            
         }
     }
 
