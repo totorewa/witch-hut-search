@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch.Generator", "src\WitchHutSearch.Generator\WitchHutSearch.Generator.csproj", "{DF78C756-CFB9-4CE4-A768-139256580281}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{EC2949FD-9620-4C2A-B2AD-D84304E161DB}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DF78C756-CFB9-4CE4-A768-139256580281} = {19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF78C756-CFB9-4CE4-A768-139256580281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF78C756-CFB9-4CE4-A768-139256580281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF78C756-CFB9-4CE4-A768-139256580281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF78C756-CFB9-4CE4-A768-139256580281}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
