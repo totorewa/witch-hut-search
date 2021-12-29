@@ -1,6 +1,6 @@
 ﻿namespace WitchHutSearch.Generator;
 
-public record Pos
+public record struct Pos
 {
     public int X { get; }
     public int Z { get; }
@@ -11,6 +11,15 @@ public record Pos
         Z = z;
     }
 
-    public Pos ToChunkPos()
-        => new Pos(X >> 4, Z >> 4);
+    public Pos ToChunkPos() 
+        => new(X >> 4, Z >> 4);
+}
+
+public ref struct DeferredPos
+{
+    public int X { get; set; }
+    public int Z { get; set; }
+
+    public static implicit operator Pos(DeferredPos pos)
+        => new(pos.X, pos.Z);
 }
