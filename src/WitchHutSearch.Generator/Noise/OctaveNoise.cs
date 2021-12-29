@@ -21,7 +21,7 @@ public class OctaveNoise
             {
                 pxr.Lo = xlo ^ Md5OctaveN[12 + omin + i, 0];
                 pxr.Hi = xhi ^ Md5OctaveN[12 + omin + i, 1];
-                Octaves.Add(new PerlinNoise(pxr));
+                Octaves.Add(new PerlinNoise(pxr) { Amplitude = amp * persist, Lacunarity = lacuna });
             }
 
             i++;
@@ -31,13 +31,20 @@ public class OctaveNoise
     }
 
     public double Sample(double x, double y, double z)
-        => (from pn in Octaves
-            let lf = pn.Lacunarity
-            let ax = MaintainPrecision(x * lf)
-            let ay = MaintainPrecision(y * lf)
-            let az = MaintainPrecision(z * lf)
-            let pv = pn.Sample(ax, ay, az, 0, 0)
-            select pn.Amplitude * pv).Sum();
+    {
+        double sum = 0;
+        foreach (var pn in Octaves)
+        {
+            var lf = pn.Lacunarity;
+            var ax = MaintainPrecision(x * lf);
+            var ay = MaintainPrecision(y * lf);
+            var az = MaintainPrecision(z * lf);
+            var pv = pn.Sample(ax, ay, az, 0, 0);
+            sum += pn.Amplitude * pv;
+        }
+
+        return sum;
+    }
 
     private static double MaintainPrecision(double x)
         => x - Math.Floor(x / 33554432.0 + 0.5) * 33554432.0;

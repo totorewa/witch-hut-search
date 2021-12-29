@@ -41,7 +41,7 @@ public struct PerlinNoise
         var i3 = (int)d3 - (d3 < 0 ? 1 : 0);
         d1 -= i1;
         d2 -= i2;
-        d3 = i3;
+        d3 -= i3;
         var t1 = d1 * d1 * d1 * (d1 * (d1 * 6d - 15d) + 10d);
         var t2 = d2 * d2 * d2 * (d2 * (d2 * 6d - 15d) + 10d);
         var t3 = d3 * d3 * d3 * (d3 * (d3 * 6d - 15d) + 10d);

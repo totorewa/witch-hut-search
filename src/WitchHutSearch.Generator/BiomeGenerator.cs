@@ -1,4 +1,5 @@
-﻿using WitchHutSearch.Generator.Layers;
+﻿using WitchHutSearch.Generator.Biomes;
+using WitchHutSearch.Generator.Layers;
 using WitchHutSearch.Generator.Noise;
 using WitchHutSearch.Generator.Random;
 
@@ -14,7 +15,6 @@ public class BiomeGenerator
     public DoublePerlinNoise Erosion { get; set; }
     public DoublePerlinNoise Weirdness { get; set; }
     public NestedSpline Spline { get; set; }
-    public int PreviousIdx { get; set; }
 
     public BiomeGenerator(ulong seed)
     {
@@ -63,35 +63,25 @@ public class BiomeGenerator
     {
         const int y = 8;
         pos = pos.ToChunkPos();
-        var px = Shift.Sample(pos.X, 0, pos.Z) * 4d;
-        var pz = Shift.Sample(pos.Z, pos.X, 0) * 4d;
+        var px = pos.X + Shift.Sample(pos.X, 0, pos.Z) * 4d;
+        var pz = pos.Z + Shift.Sample(pos.Z, pos.X, 0) * 4d;
 
-        var c = Continentalness.Sample(px, 0, pz);
-        var e = Erosion.Sample(px, 0, pz);
-        var w = Weirdness.Sample(px, 0, pz);
+        var c = (float)Continentalness.Sample(px, 0, pz);
+        var e = (float)Erosion.Sample(px, 0, pz);
+        var w = (float)Weirdness.Sample(px, 0, pz);
 
         Span<float> npParam = stackalloc float[]
         {
-            (float)c, (float)e, -3.0f * (Math.Abs(Math.Abs((float)w) - 0.6666667f) - 0.33333334f), (float)w
+            c, e, -3.0f * (Math.Abs(Math.Abs(w) - 0.6666667f) - 0.33333334f), w
         };
-        var off = Spline.Get(npParam) + 0.015f;
-        var d = 1.0 - (y << 2) / 128d - 83d / 160d + off;
+        double off = Spline.Get(npParam) + 0.015f;
+        var d = (float)(1.0 - (y << 2) / 128d - 83d / 160d + off);
 
-        var t = Temperature.Sample(px, 0, pz);
-        var h = Temperature.Sample(px, 0, pz);
+        var t = (float)Temperature.Sample(px, 0, pz);
+        var h = (float)Humidity.Sample(px, 0, pz);
 
-        Span<long> np = stackalloc long[]
-        {
-            (long)(t * 10000f),
-            (long)(h * 10000f),
-            (long)(c * 10000f),
-            (long)(e * 10000f),
-            (long)(d * 10000f),
-            (long)(w * 10000f),
-        };
-
-        // TODO rest
-        return 0;
+        var np = new NoiseParameters(t, h, c, e, d, w);
+        return np.P2Overworld();
     }
 
     private static NestedSpline CreateBiomeNoise()

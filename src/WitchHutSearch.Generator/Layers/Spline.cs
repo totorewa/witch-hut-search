@@ -27,7 +27,7 @@ public abstract class Spline
         sp.AddValue(-0.4f, sp3);
         sp.AddValue(-0.35f, sp4);
         sp.AddValue(-0.1f, sp5);
-        sp.AddValue(-0.2f, sp6);
+        sp.AddValue(0.2f, sp6);
         if (bl)
         {
             sp.AddValue(0.4f, sp7);

@@ -16,26 +16,34 @@ public class NestedSpline : Spline
         var type = (int)Type;
         var f = values.Length > type ? values[type] : default;
 
+        var match = false;
         SplineValue? prevSv = null;
         SplineValue? sv = null;
         for (var i = 0; i < Values.Count; i++)
         {
             prevSv = sv;
             sv = Values[i];
-            if (!(sv.Location >= f)) continue;
-            if (i != 0 && i != Values.Count - 1) break;
+            if (sv.Location >= f)
+            {
+                match = i != 0;
+                break;
+            }
+        }
 
-            var v = sv.Value.Get(values);
+        if (!match)
+        {
+            var v = sv!.Value.Get(values);
             return v + sv.Derivative * (f - sv.Location);
         }
 
-        var g = (f - prevSv!.Location) / (sv!.Location - prevSv.Location);
-        var h = prevSv.Value.Get(values);
-        var k = sv.Value.Get(values);
-        var l = prevSv.Derivative * (sv.Location - prevSv.Location) - (k - h);
-        var m = -sv.Derivative * (sv.Location - prevSv.Location) + (k - h);
+        var k = (f - prevSv!.Location) / (sv!.Location - prevSv.Location);
+        var n = prevSv.Value.Get(values);
+        var o = sv.Value.Get(values);
+        var p = prevSv.Derivative * (sv.Location - prevSv.Location) - (o - n);
+        var q = -sv.Derivative * (sv.Location - prevSv.Location) + (o - n);
 
-        return (float)McMath.Lerp(g, h, k) + g * (1f - g) * (float)McMath.Lerp(g, l, m);
+        var r = (float)(McMath.Lerp(k, n, o) + k * (1f - k) * McMath.Lerp(k, p, q));
+        return r;
     }
 }
 
