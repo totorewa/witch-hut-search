@@ -8,11 +8,11 @@ public abstract class FeatureLocator
     {
     }
 
-    public abstract Pos GetPosition(ulong seed, Pos region);
+    public abstract void GetPosition(ulong seed, Pos region, ref Pos pos);
 
     private sealed class WitchHutLocator : FeatureLocator
     {
-        public override Pos GetPosition(ulong seed, Pos region)
+        public override void GetPosition(ulong seed, Pos region, ref Pos pos)
         {
             const ulong k = 0x5deece66d;
             const ulong mask = (1UL << 48) - 1;
@@ -22,14 +22,11 @@ public abstract class FeatureLocator
             seed ^= k;
             seed = (seed * k + b) & mask;
 
-            var pos = new DeferredPos();
             pos.X = (int)(seed >> 17) % 24;
             pos.X = (int)(((ulong)region.X * 32 + (ulong)pos.X) << 4);
             seed = (seed * k + b) & mask;
             pos.Z = (int)(seed >> 17) % 24;
             pos.Z = (int)(((ulong)region.Z * 32 + (ulong)pos.Z) << 4);
-            
-            return pos;
         }
     }
 }

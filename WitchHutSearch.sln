@@ -16,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EE5E5EC0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch.Generator.Tests", "tests\WitchHutSearch.Generator.Tests\WitchHutSearch.Generator.Tests.csproj", "{1554B8A0-101B-4C58-90E0-BA1685F99F24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch", "src\WitchHutSearch\WitchHutSearch.csproj", "{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DF78C756-CFB9-4CE4-A768-139256580281} = {19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}
 		{1554B8A0-101B-4C58-90E0-BA1685F99F24} = {EE5E5EC0-378A-4483-9303-1C3595D94790}
+		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F} = {19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DF78C756-CFB9-4CE4-A768-139256580281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -34,5 +37,9 @@ Global
 		{1554B8A0-101B-4C58-90E0-BA1685F99F24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1554B8A0-101B-4C58-90E0-BA1685F99F24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1554B8A0-101B-4C58-90E0-BA1685F99F24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
