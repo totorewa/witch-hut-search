@@ -1,6 +1,6 @@
 ﻿namespace WitchHutSearch.Generator;
 
-public ref struct Pos
+public struct Pos
 {
     public int X { get; set; }
     public int Z { get; set; }

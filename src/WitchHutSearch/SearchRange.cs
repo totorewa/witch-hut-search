@@ -76,9 +76,7 @@ public class SearchRange
         _depth = depth;
     }
 
-    // SearchWorker search the east, south-east, and south neighbouring regions,
-    // so the south-east corner is moved in by one as those edge regions will be searched in the neighbour search.
-    private void CalculateX() => MaxX = _regionX + _width - 1;
+    private void CalculateX() => MaxX = _regionX + _width;
 
-    private void CalculateZ() => MaxZ = _regionZ + _depth - 1;
+    private void CalculateZ() => MaxZ = _regionZ + _depth;
 }

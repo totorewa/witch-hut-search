@@ -1,4 +1,6 @@
-﻿using WitchHutSearch.Generator;
+﻿using System.Buffers;
+using WitchHutSearch.Extensions;
+using WitchHutSearch.Generator;
 using WitchHutSearch.Generator.Features;
 
 namespace WitchHutSearch;
@@ -6,60 +8,165 @@ namespace WitchHutSearch;
 public class SearchWorker
 {
     private readonly BiomeGenerator _generator;
-    private readonly WitchHutCount _count;
+    private readonly SearchRequirements _requirements;
 
-    public SearchWorker(BiomeGenerator generator, WitchHutCount count)
+    public SearchWorker(BiomeGenerator generator, SearchRequirements requirements)
     {
         _generator = generator;
-        _count = count;
+        _requirements = requirements;
     }
 
+    // This method's a bit big... I might clean it up someday... eventually... never..
     public void Search(SearchRange range)
     {
         var locator = FeatureLocator.WitchHut;
         var seed = _generator.Seed.Seed;
-        var count = (int)_count;
+        var target = _requirements.Count;
         bool preloaded;
-        // Current region is the north-west region, as the neighbour search is east, south-east, and south.
-        RegionHutPos nw = new(), ne = new(), sw = new(), se = new();
 
-        for (nw.region.Z = range.MinZ + 1; nw.region.Z <= range.MaxZ; nw.region.Z++)
+        var huts = new HutCollection();
+        var neighbors = new RegionHutPos[4];
+
+        for (var z = range.MaxZ; z >= range.MinZ; z--)
         {
             preloaded = false;
-            ne.region.Z = nw.region.Z;
-            se.region.Z = nw.region.Z + 1;
-            sw.region.Z = nw.region.Z + 1;
-            for (nw.region.X = range.MinX + 1; nw.region.X <= range.MaxX; nw.region.X++)
+            huts.MoveZ(z);
+            for (var x = range.MaxX; x >= range.MinX; x--)
             {
-                ne.region.X = nw.region.X + 1;
-                se.region.X = nw.region.X + 1;
-                sw.region.X = nw.region.X;
+                huts.MoveX(x);
                 if (preloaded)
                 {
-                    nw.hut.Copy(ne.hut);
-                    sw.hut.Copy(se.hut);
+                    huts.NorthEast.hut.Copy(huts.NorthWest.hut);
+                    huts.SouthEast.hut.Copy(huts.SouthWest.hut);
+                    huts.NorthEast.IsSwamp = huts.NorthWest.IsSwamp;
+                    huts.SouthEast.IsSwamp = huts.SouthWest.IsSwamp;
                 }
                 else
                 {
-                    locator.GetPosition(seed, nw.region, ref nw.hut);
-                    locator.GetPosition(seed, sw.region, ref sw.hut);
+                    locator.GetPosition(seed, huts.SouthEast.region, ref huts.SouthEast.hut);
+                    locator.GetPosition(seed, huts.NorthEast.region, ref huts.NorthEast.hut);
+                    huts.SouthEast.IsSwamp = null;
+                    huts.NorthEast.IsSwamp = null;
                     preloaded = true;
                 }
-                
-                // Check distance (stop if count met and in range)
 
-                locator.GetPosition(seed, ne.region, ref ne.hut);
-                // Check distance (stop if count met and in range)
-                
-                locator.GetPosition(seed, se.region, ref se.hut);
-                // Check distance
+                locator.GetPosition(seed, huts.SouthWest.region, ref huts.SouthWest.hut);
+                locator.GetPosition(seed, huts.NorthWest.region, ref huts.NorthWest.hut);
+
+                if (!(huts.SouthEast.IsSwamp ??= _generator.IsSwamp(huts.SouthEast.hut)))
+                    continue;
+
+                huts.SouthWest.IsSwamp = null;
+                huts.NorthWest.IsSwamp = null;
+
+                var count = 0;
+                foreach (var neighbor in huts.Neighbors)
+                    neighbors[count++] = neighbor;
+
+                if (count + 1 < target) continue;
+                for (var i = 0; i < count && count + 1 - i >= target; i++)
+                {
+                    var centre = new Pos();
+                    centre.Copy(huts.SouthEast.hut);
+                    for (var j = 0; j < count && j < target - 1; j++)
+                    {
+                        var n = neighbors[i + j];
+                        centre.X += n.hut.X;
+                        centre.Z += n.hut.Z;
+                    }
+
+                    centre.X /= count + 1;
+                    centre.Z /= count + 1;
+                    var isValid = centre.InSpawnDistanceFromCentre(huts.SouthEast.hut);
+                    if (!isValid) continue;
+                    for (var j = 0; j < count && j < target - 1; j++)
+                    {
+                        var n = neighbors[i + j];
+                        if (!centre.InSpawnDistanceFromCentre(n.hut) || !(n.IsSwamp ??= _generator.IsSwamp(n.hut)))
+                        {
+                            isValid = false;
+                            break;
+                        }
+                    }
+
+                    if (isValid)
+                    {
+                        // Submit centre pos
+                    }
+                }
             }
         }
     }
 }
 
-public ref struct RegionHutPos
+public class RegionHutPos
 {
     public Pos region = new();
     public Pos hut = new();
+    public bool? IsSwamp { get; set; }
+
+    public RegionHutPos()
+    {
+        IsSwamp = null;
+    }
+}
+
+public class HutCollection
+{
+    /// <summary>
+    /// Current region
+    /// </summary>
+    public RegionHutPos SouthEast { get; }
+
+    /// <summary>
+    /// Neighbouring region
+    /// </summary>
+    public RegionHutPos NorthEast { get; }
+
+    /// <summary>
+    /// Neighbouring region
+    /// </summary>
+    public RegionHutPos SouthWest { get; }
+
+    /// <summary>
+    /// Neighbouring region
+    /// </summary>
+    public RegionHutPos NorthWest { get; }
+
+    public IEnumerable<RegionHutPos> Neighbors
+    {
+        get
+        {
+            if (SouthEast.hut.InSpawnDistanceWith(SouthWest.hut))
+                yield return SouthWest;
+            if (SouthEast.hut.InSpawnDistanceWith(NorthWest.hut))
+                yield return NorthWest;
+            if (SouthEast.hut.InSpawnDistanceWith(NorthEast.hut))
+                yield return NorthEast;
+        }
+    }
+
+    public HutCollection()
+    {
+        SouthEast = new RegionHutPos();
+        SouthWest = new RegionHutPos();
+        NorthWest = new RegionHutPos();
+        NorthEast = new RegionHutPos();
+    }
+
+    public void MoveX(int x)
+    {
+        SouthEast.region.X = x;
+        SouthWest.region.X = x - 1;
+        NorthEast.region.X = x;
+        NorthWest.region.X = x - 1;
+    }
+
+    public void MoveZ(int z)
+    {
+        SouthEast.region.Z = z;
+        SouthWest.region.Z = z;
+        NorthEast.region.Z = z - 1;
+        NorthWest.region.Z = z - 1;
+    }
 }

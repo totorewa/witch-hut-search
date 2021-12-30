@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client;
-using WitchHutSearch.Generator.Features;
+﻿using WitchHutSearch.Generator.Features;
 using Xunit;
 
 namespace WitchHutSearch.Generator.Tests;
@@ -15,7 +14,7 @@ public class WitchHutTest
         var pos = new Pos(0, 0);
         var output = new Pos();
         FeatureLocator.WitchHut.GetPosition(seed, pos, ref output);
-        
+        Assert.Equal((expected.X, expected.Z), (output.X, output.Z));
 
         expected.X = -17392;
         expected.Z = 26944;

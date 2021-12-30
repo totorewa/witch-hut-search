@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch.Generator.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch", "src\WitchHutSearch\WitchHutSearch.csproj", "{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WitchHutSearch.Tests", "tests\WitchHutSearch.Tests\WitchHutSearch.Tests.csproj", "{02007A6E-01FC-41BD-8593-4731011C764D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,7 @@ Global
 		{DF78C756-CFB9-4CE4-A768-139256580281} = {19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}
 		{1554B8A0-101B-4C58-90E0-BA1685F99F24} = {EE5E5EC0-378A-4483-9303-1C3595D94790}
 		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F} = {19AA6554-5DF3-4BD2-8153-1F9B7638D2D1}
+		{02007A6E-01FC-41BD-8593-4731011C764D} = {EE5E5EC0-378A-4483-9303-1C3595D94790}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{DF78C756-CFB9-4CE4-A768-139256580281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -40,5 +43,9 @@ Global
 		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEDB4EE4-64C9-474C-8B46-636F1E291C9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02007A6E-01FC-41BD-8593-4731011C764D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02007A6E-01FC-41BD-8593-4731011C764D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02007A6E-01FC-41BD-8593-4731011C764D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02007A6E-01FC-41BD-8593-4731011C764D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
