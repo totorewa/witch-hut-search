@@ -70,10 +70,10 @@ public class SearchRange
 
     public SearchRange(int regionX, int regionZ, int width, int depth)
     {
-        _regionX = regionX;
-        _regionZ = regionZ;
         _width = width;
         _depth = depth;
+        RegionX = regionX;
+        RegionZ = regionZ;
     }
 
     private void CalculateX() => MaxX = _regionX + _width;

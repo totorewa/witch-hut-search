@@ -61,8 +61,10 @@ public class BiomeGenerator
 
     public int GetBiomeAtPos(Pos pos)
     {
-        const int y = 8;
-        pos = pos.ToChunkPos();
+        const int y = 16;
+        pos.X = (pos.X - 2) >> 2;
+        pos.Z = (pos.Z - 2) >> 2;
+        
         var px = pos.X + Shift.Sample(pos.X, 0, pos.Z) * 4d;
         var pz = pos.Z + Shift.Sample(pos.Z, pos.X, 0) * 4d;
 

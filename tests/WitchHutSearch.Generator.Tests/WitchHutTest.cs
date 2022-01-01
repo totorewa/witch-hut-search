@@ -23,4 +23,15 @@ public class WitchHutTest
         FeatureLocator.WitchHut.GetPosition(seed, pos, ref output);
         Assert.Equal((expected.X, expected.Z), (output.X, output.Z));
     }
+
+    [Fact]
+    public void TestWitchHutWithBiome()
+    {
+        const ulong seed = 10579846526078875722;
+        var pos = new Pos();
+        var g = new BiomeGenerator(seed);
+        FeatureLocator.WitchHut.GetPosition(seed, new Pos(-15, -34), ref pos);
+        var biomeId = g.GetBiomeAtPos(pos);
+        Assert.NotEqual(6, biomeId);
+    }
 }
