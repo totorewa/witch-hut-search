@@ -10,13 +10,13 @@ namespace WitchHutSearch.Searcher;
 
 public class SearchWorker
 {
-    private readonly ILogger<SearchWorker> _logger;
+    private readonly ILogger _logger;
     private readonly HutCollation _collation;
     private readonly BiomeGenerator _generator;
     private readonly ISwampBiomeVerifier _swampBiomeVerifier;
 
     public SearchWorker(
-        ILogger<SearchWorker> logger,
+        ILogger logger,
         HutCollation collation,
         BiomeGenerator generator)
     {

@@ -15,10 +15,13 @@ PARAMETERS
 OPTIONS
 * -s|--seed         Seed to search on.
   -b|--blocks       Number of blocks to search in each direction. Default: "128000".
-  -t|--threads      Number of threads to search with. Default: # of cores x2.
+  -t|--threads      Number of threads to search with. Default: "12".
+  -o|--out          Output file for writing locations to.
   -h|--help         Shows help text.
   --version         Shows version information.
 ```
+
+You can specify a CSV file as the output to have it written in CSV format. All other file types are written as text.
 
 ## Disclaimers
 

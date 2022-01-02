@@ -7,6 +7,8 @@ using WitchHutSearch.Cli.Validators;
 using WitchHutSearch.Generator;
 using WitchHutSearch.Searcher;
 using WitchHutSearch.Searcher.Parameters;
+using WitchHutSearch.Writers;
+using ConsoleWriter = WitchHutSearch.Writers.ConsoleWriter;
 
 namespace WitchHutSearch.Cli;
 
@@ -28,24 +30,30 @@ public class WitchHutSearchCommand : ICommand
     [CommandOption("threads", 't', Description = "Number of threads to search with.")]
     public int ThreadCount { get; init; } = Environment.ProcessorCount * 2;
 
+    [CommandOption("out", 'o', Description = "Output file for writing locations to.")]
+    public string? Output { get; init; }
+
     public WitchHutSearchCommand()
     {
-        _loggerFactory = LoggerFactory.Create(b => b.AddConsole());
-        _logger = _loggerFactory.CreateLogger<WitchHutSearchCommand>();
+        _loggerFactory = LoggerFactory.Create(b => b.AddSimpleConsole());
+        _logger = _loggerFactory.CreateLogger("Main");
     }
 
-    public ValueTask ExecuteAsync(IConsole console)
+    public async ValueTask ExecuteAsync(IConsole console)
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 
         var requirements = CreateSearchRequirements();
         var generator = new BiomeGenerator(unchecked((ulong)Seed));
-        var collation = new HutCollation(_loggerFactory.CreateLogger<HutCollation>(), requirements);
-        var worker = new SearchWorker(_loggerFactory.CreateLogger<SearchWorker>(), collation, generator);
+        var collation = new HutCollation(_loggerFactory.CreateLogger("Collator"), requirements);
+        var worker = new SearchWorker(_loggerFactory.CreateLogger("Worker"), collation, generator);
 
         _logger.LogInformation("Searching for {Huts} huts on seed: {Seed}",
             requirements.Count, Seed);
+
+        if (!string.IsNullOrWhiteSpace(Output))
+            _logger.LogInformation("Output file set to: {File}", Output.Trim());
 
         var workers = requirements.CreateSearchRanges(ThreadCount)
             .Select(r => new Thread(() => worker.Search(r)))
@@ -58,15 +66,13 @@ public class WitchHutSearchCommand : ICommand
             thread.Join();
 
         stopwatch.Stop();
-        _logger.LogInformation("Search completed - printing results");
 
-        foreach (var hut in collation.Centres.OrderBy(c => c.DistanceFromOrigin))
-            console.Output.WriteLine($"{hut.Huts} at {hut.X}, {hut.Z}");
+        await WriteAsync(console, collation);
 
         _logger.LogInformation("Search completed in {ElapsedSeconds} seconds",
             stopwatch.Elapsed.TotalSeconds.ToString("F4"));
 
-        return ValueTask.CompletedTask;
+        Thread.Sleep(1000); // This is silly but the process ends before the final log message is printed
     }
 
     public SearchRequirements CreateSearchRequirements()
@@ -79,4 +85,22 @@ public class WitchHutSearchCommand : ICommand
             Range = regions
         };
     }
+
+    private async Task WriteAsync(IConsole console, HutCollation huts)
+    {
+        using var writer = GetAppropriateWriter(console);
+        await writer.BeginAsync();
+
+        var count = 0;
+        foreach (var hut in huts.Centres.OrderBy(c => c.DistanceFromOrigin))
+            if (await writer.WriteAsync(hut))
+                count++;
+
+        await writer.CompleteAsync(count);
+    }
+
+    private IHutWriter GetAppropriateWriter(IConsole console)
+        => string.IsNullOrWhiteSpace(Output)
+            ? new ConsoleWriter(_loggerFactory.CreateLogger("Output"), console)
+            : new FileWriter(_loggerFactory.CreateLogger("Output"), Output);
 }

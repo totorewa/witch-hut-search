@@ -6,14 +6,14 @@ namespace WitchHutSearch.Searcher;
 
 public class HutCollation
 {
-    private readonly ILogger<HutCollation> _logger;
+    private readonly ILogger _logger;
     private readonly object _lock = new();
     private readonly ICollection<HutCentre> _foundCentres = new HashSet<HutCentre>();
     public SearchRequirements Requirements { get; }
     public IEnumerable<HutCentre> Centres => _foundCentres;
 
     public HutCollation(
-        ILogger<HutCollation> logger,
+        ILogger logger,
         SearchRequirements requirements)
     {
         _logger = logger;
