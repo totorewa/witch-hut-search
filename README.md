@@ -3,6 +3,8 @@
 This is a C# implementation of witch hut searching for Minecraft 1.18 in a given seed.
 The tool searchs any provided seed for double, triple, or quad witch huts within a specified range from origin (0,0).
 
+_This was a project that I wanted to try out for fun and will likely not maintain so have no expectations of it being updated for any further Minecraft generation changes unless I happen to feel up to it or need it myself._
+
 ## Usage
 
 ```cmd
@@ -15,13 +17,16 @@ PARAMETERS
 OPTIONS
 * -s|--seed         Seed to search on.
   -b|--blocks       Number of blocks to search in each direction. Default: "128000".
-  -t|--threads      Number of threads to search with. Default: "12".
+  -t|--threads      Number of threads to search with. Default: # of cores x 2.
   -o|--out          Output file for writing locations to.
-  -h|--help         Shows help text.
-  --version         Shows version information.
 ```
 
-You can specify a CSV file as the output to have it written in CSV format. All other file types are written as text.
+Example: `WitchHutSearch.exe 3 -s 123456 -b 1000000 -o output.txt`  
+This will search for triple witch huts within a million block radius on the seed `123456` and write the results to `output.txt`.
+
+You can specify a CSV file as the output to have it written in CSV format. All other file types are written as text.  
+
+Sometimes false positives may be returned because something prevented one or more of the huts from generating in the world.
 
 ## Disclaimers
 
