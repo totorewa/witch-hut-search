@@ -1,4 +1,4 @@
-﻿namespace WitchHutSearch;
+﻿namespace WitchHutSearch.Searcher.Parameters;
 
 public class SearchRequirements
 {
@@ -13,10 +13,12 @@ public class SearchRequirements
 
     public IEnumerable<SearchRange> CreateSearchRanges(int count)
     {
-        var min = -Range;
-        var rangeZ = Range * 2;
         var sectorSize = (int)Math.Ceiling((double)Range / count);
+        var adjustedRange = sectorSize * count;
+        var adjustedMin = -adjustedRange;
+        var reqMin = -Range;
+        var rangeZ = Range * 2;
         for (var i = 0; i < count; i++)
-            yield return new SearchRange(min + sectorSize * i, min, sectorSize - 1, rangeZ);
+            yield return new SearchRange(adjustedMin + sectorSize * i, reqMin, sectorSize - 1, rangeZ);
     }
 }

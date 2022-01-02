@@ -1,6 +1,6 @@
 ﻿using WitchHutSearch.Generator;
 
-namespace WitchHutSearch;
+namespace WitchHutSearch.Searcher;
 
 public struct HutCentre : IEquatable<HutCentre>
 {

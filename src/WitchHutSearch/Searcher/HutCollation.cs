@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using WitchHutSearch.Generator;
+using WitchHutSearch.Searcher.Parameters;
 
-namespace WitchHutSearch;
+namespace WitchHutSearch.Searcher;
 
 public class HutCollation
 {
@@ -25,10 +26,9 @@ public class HutCollation
             return;
 
         lock (_lock)
-        {
             _foundCentres.Add(new HutCentre(huts, pos));
-            _logger.LogInformation("Added {Huts} huts centred at {X}, {Z} on thread {Thread}",
-                huts, pos.X, pos.Z, Environment.CurrentManagedThreadId);
-        }
+        
+        _logger.LogTrace("Added {Huts} huts centred at {X}, {Z} from thread {Thread}",
+            huts, pos.X, pos.Z, Environment.CurrentManagedThreadId);
     }
 }

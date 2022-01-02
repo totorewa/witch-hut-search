@@ -1,4 +1,4 @@
-﻿namespace WitchHutSearch;
+﻿namespace WitchHutSearch.Searcher.Parameters;
 
 public class SearchRange
 {

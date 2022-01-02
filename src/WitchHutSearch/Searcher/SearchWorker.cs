@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using Microsoft.Extensions.Logging;
+using WitchHutSearch.Biomes;
 using WitchHutSearch.Extensions;
 using WitchHutSearch.Generator;
 using WitchHutSearch.Generator.Features;
+using WitchHutSearch.Searcher.Parameters;
 
-namespace WitchHutSearch;
+namespace WitchHutSearch.Searcher;
 
 public class SearchWorker
 {
@@ -32,7 +34,7 @@ public class SearchWorker
         var target = _collation.Requirements.Count;
         bool preloaded;
 
-        _logger.LogInformation("Searching for {Huts} huts between {MinX}, {MinZ} and {MaxX}, {MaxZ} on thread {Thread}",
+        _logger.LogTrace("Searching for {Huts} huts between {MinX}, {MinZ} and {MaxX}, {MaxZ} on thread {Thread}",
             target, range.MinX,
             range.MinZ, range.MaxX, range.MaxZ, Environment.CurrentManagedThreadId);
 

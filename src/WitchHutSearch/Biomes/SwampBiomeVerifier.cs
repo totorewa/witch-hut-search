@@ -1,8 +1,7 @@
-﻿using System.Collections.Concurrent;
-using WitchHutSearch.Extensions;
+﻿using WitchHutSearch.Extensions;
 using WitchHutSearch.Generator;
 
-namespace WitchHutSearch;
+namespace WitchHutSearch.Biomes;
 
 public interface ISwampBiomeVerifier
 {
