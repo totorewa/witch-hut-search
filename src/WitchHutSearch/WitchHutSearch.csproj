@@ -10,9 +10,9 @@
         <Authors>Totorewa</Authors>
         <Description>Searches for double, triple, or quad witch huts on a given seed</Description>
         <Copyright>Copyright (c) 2021 Totorewa</Copyright>
-        <PackageProjectUrl>https://github.com/totorewa/WitchHutSearch.NET</PackageProjectUrl>
-        <PackageLicenseUrl>https://github.com/totorewa/WitchHutSearch.NET/blob/main/LICENSE</PackageLicenseUrl>
-        <RepositoryUrl>https://github.com/totorewa/WitchHutSearch.NET</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/totorewa/witch-hut-search</PackageProjectUrl>
+        <PackageLicenseUrl>https://github.com/totorewa/witch-hut-search/blob/main/LICENSE</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/totorewa/witch-hut-search</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <ApplicationIcon>..\..\assets\witchhutsearch.ico</ApplicationIcon>
     </PropertyGroup>
