@@ -12,11 +12,8 @@ public class SearchRange
         get => _regionX;
         set
         {
-            if (_regionX != value)
-            {
-                _regionX = value;
-                CalculateX();
-            }
+            _regionX = value;
+            CalculateX();
         }
     }
 
@@ -25,11 +22,8 @@ public class SearchRange
         get => _regionZ;
         set
         {
-            if (_regionZ != value)
-            {
-                _regionZ = value;
-                CalculateZ();
-            }
+            _regionZ = value;
+            CalculateZ();
         }
     }
 

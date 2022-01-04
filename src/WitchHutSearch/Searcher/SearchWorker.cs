@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Numerics;
 using Microsoft.Extensions.Logging;
 using WitchHutSearch.Biomes;
 using WitchHutSearch.Extensions;
@@ -39,7 +40,7 @@ public class SearchWorker
             range.MinZ, range.MaxX, range.MaxZ, Environment.CurrentManagedThreadId);
 
         var huts = new SearchRegionCollection(_swampBiomeVerifier);
-        var validHuts = new Pos[4];
+        var validHuts = new Vector2[4];
 
         for (var z = range.MaxZ; z >= range.MinZ; z--)
         {
@@ -50,24 +51,22 @@ public class SearchWorker
                 huts.MoveX(x);
                 if (preloaded)
                 {
-                    huts.NorthEast.hut.Copy(huts.NorthWest.hut);
-                    huts.SouthEast.hut.Copy(huts.SouthWest.hut);
-                    huts.NorthEast.IsSwamp = huts.NorthWest.IsSwamp;
-                    huts.SouthEast.IsSwamp = huts.SouthWest.IsSwamp;
+                    huts.NorthEast.CopyFrom(huts.NorthWest);
+                    huts.SouthEast.CopyFrom(huts.SouthWest);
                 }
                 else
                 {
-                    locator.GetPosition(seed, huts.SouthEast.region, ref huts.SouthEast.hut);
-                    locator.GetPosition(seed, huts.NorthEast.region, ref huts.NorthEast.hut);
-                    huts.SouthEast.IsSwamp = null;
-                    huts.NorthEast.IsSwamp = null;
+                    locator.GetPosition(seed, huts.SouthEast.Region, ref huts.SouthEast.Hut);
+                    locator.GetPosition(seed, huts.NorthEast.Region, ref huts.NorthEast.Hut);
+                    huts.SouthEast.Reset();
+                    huts.NorthEast.Reset();
                     preloaded = true;
                 }
 
-                locator.GetPosition(seed, huts.SouthWest.region, ref huts.SouthWest.hut);
-                locator.GetPosition(seed, huts.NorthWest.region, ref huts.NorthWest.hut);
-                huts.SouthWest.IsSwamp = null;
-                huts.NorthWest.IsSwamp = null;
+                locator.GetPosition(seed, huts.SouthWest.Region, ref huts.SouthWest.Hut);
+                locator.GetPosition(seed, huts.NorthWest.Region, ref huts.NorthWest.Hut);
+                huts.SouthWest.Reset();
+                huts.NorthWest.Reset();
 
                 if (!huts.AnyCloseTogether()) continue;
 
@@ -77,7 +76,7 @@ public class SearchWorker
                 foreach (var r in huts)
                 {
                     if (r.IsSwamp ?? false)
-                        validHuts[hutCount++] = r.hut;
+                        validHuts[hutCount++] = r.Hut;
                     if (target + hutCount - i++ > 0)
                         continue;
                     targetMet = false;
@@ -87,11 +86,9 @@ public class SearchWorker
                 if (!targetMet) continue;
                 for (; hutCount >= target; hutCount--)
                 {
-                    var centre = new Pos();
-                    foreach (var h in validHuts.Take(hutCount))
-                        centre.Add(h);
+                    var centre = validHuts.Take(hutCount).Aggregate(new Vector2(), Vector2.Add);
                     centre.X = (int)((double)centre.X / hutCount);
-                    centre.Z = (int)((double)centre.Z / hutCount);
+                    centre.Y = (int)((double)centre.Y / hutCount);
                     if (validHuts.Take(hutCount).All(h => centre.InSpawnDistanceFromCentre(h)))
                         _collation.Submit(hutCount, centre);
                 }
@@ -104,19 +101,30 @@ public class RegionHutPos
 {
     private bool? _isSwamp;
     private readonly ISwampBiomeVerifier _swampBiomeVerifier;
-    public Pos region = new();
-    public Pos hut = new();
+    public Vector2 Region;
+    public Vector2 Hut;
 
     public bool? IsSwamp
     {
-        get => _isSwamp ??= _swampBiomeVerifier.IsInSwampBiome(hut);
+        get => _isSwamp ??= _swampBiomeVerifier.IsInSwampBiome(Hut);
         set => _isSwamp = value;
     }
 
     public RegionHutPos(ISwampBiomeVerifier swampBiomeVerifier)
     {
         _swampBiomeVerifier = swampBiomeVerifier;
-        IsSwamp = null;
+    }
+
+    public void CopyFrom(RegionHutPos other)
+    {
+        Hut.X = other.Hut.X;
+        Hut.Y = other.Hut.Y;
+        _isSwamp = other._isSwamp;
+    }
+
+    public void Reset()
+    {
+        _isSwamp = null;
     }
 }
 
@@ -152,33 +160,41 @@ public class SearchRegionCollection : IEnumerable<RegionHutPos>
 
     public void MoveX(int x)
     {
-        SouthEast.region.X = x;
-        SouthWest.region.X = x - 1;
-        NorthEast.region.X = x;
-        NorthWest.region.X = x - 1;
+        SouthEast.Region.X = x;
+        SouthWest.Region.X = x - 1;
+        NorthEast.Region.X = x;
+        NorthWest.Region.X = x - 1;
     }
 
     public void MoveZ(int z)
     {
-        SouthEast.region.Z = z;
-        SouthWest.region.Z = z;
-        NorthEast.region.Z = z - 1;
-        NorthWest.region.Z = z - 1;
+        SouthEast.Region.Y = z;
+        SouthWest.Region.Y = z;
+        NorthEast.Region.Y = z - 1;
+        NorthWest.Region.Y = z - 1;
     }
 
     public bool AnyCloseTogether()
     {
         var count = 0;
-        return this.Any(a => this.Skip(++count).Any(b => a.hut.InSpawnDistanceWith(b.hut)));
+        return this.Any(a => this.Skip(++count).Any(b => a.Hut.InSpawnDistanceWith(b.Hut)));
     }
 
     public IEnumerator<RegionHutPos> GetEnumerator()
     {
-        yield return SouthEast;
-        yield return NorthEast;
-        yield return SouthWest;
-        yield return NorthWest;
+        for (var i = 0; i < 4; i++)
+            yield return this[i]!;
     }
+
+    public RegionHutPos? this[int i]
+        => i switch
+        {
+            0 => SouthEast,
+            1 => NorthEast,
+            2 => SouthWest,
+            3 => NorthWest,
+            _ => default
+        };
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

@@ -1,4 +1,5 @@
-﻿using WitchHutSearch.Generator.Biomes;
+﻿using System.Numerics;
+using WitchHutSearch.Generator.Biomes;
 using WitchHutSearch.Generator.Layers;
 using WitchHutSearch.Generator.Noise;
 using WitchHutSearch.Generator.Random;
@@ -59,14 +60,14 @@ public class BiomeGenerator
         Weirdness = new DoublePerlinNoise(pxr, amp[30..], -7);
     }
 
-    public int GetBiomeAtPos(Pos pos)
+    public int GetBiomeAtPos(Vector2 pos)
     {
         const int y = 16;
-        pos.X = (pos.X - 2) >> 2;
-        pos.Z = (pos.Z - 2) >> 2;
-        
-        var px = pos.X + Shift.Sample(pos.X, 0, pos.Z) * 4d;
-        var pz = pos.Z + Shift.Sample(pos.Z, pos.X, 0) * 4d;
+        pos.X = ((int)pos.X - 2) >> 2;
+        pos.Y = ((int)pos.Y - 2) >> 2;
+
+        var px = pos.X + Shift.Sample(pos.X, 0, pos.Y) * 4d;
+        var pz = pos.Y + Shift.Sample(pos.Y, pos.X, 0) * 4d;
 
         var c = (float)Continentalness.Sample(px, 0, pz);
         var e = (float)Erosion.Sample(px, 0, pz);

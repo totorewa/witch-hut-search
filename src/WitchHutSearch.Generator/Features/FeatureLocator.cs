@@ -1,4 +1,6 @@
-﻿namespace WitchHutSearch.Generator.Features;
+﻿using System.Numerics;
+
+namespace WitchHutSearch.Generator.Features;
 
 public abstract class FeatureLocator
 {
@@ -8,25 +10,25 @@ public abstract class FeatureLocator
     {
     }
 
-    public abstract void GetPosition(ulong seed, Pos region, ref Pos pos);
+    public abstract void GetPosition(ulong seed, Vector2 region, ref Vector2 pos);
 
     private sealed class WitchHutLocator : FeatureLocator
     {
-        public override void GetPosition(ulong seed, Pos region, ref Pos pos)
+        public override void GetPosition(ulong seed, Vector2 region, ref Vector2 pos)
         {
             const ulong k = 0x5deece66d;
             const ulong mask = (1UL << 48) - 1;
             const ulong b = 0xb;
 
-            seed = seed + (ulong)region.X * 341873128712UL + (ulong)region.Z * 132897987541UL + 14357620;
+            seed = seed + (ulong)region.X * 341873128712UL + (ulong)region.Y * 132897987541UL + 14357620;
             seed ^= k;
             seed = (seed * k + b) & mask;
 
             pos.X = (int)(seed >> 17) % 24;
             pos.X = (int)(((ulong)region.X * 32 + (ulong)pos.X) << 4);
             seed = (seed * k + b) & mask;
-            pos.Z = (int)(seed >> 17) % 24;
-            pos.Z = (int)(((ulong)region.Z * 32 + (ulong)pos.Z) << 4);
+            pos.Y = (int)(seed >> 17) % 24;
+            pos.Y = (int)(((ulong)region.Y * 32 + (ulong)pos.Y) << 4);
         }
     }
 }

@@ -1,11 +1,12 @@
-﻿using WitchHutSearch.Extensions;
+﻿using System.Numerics;
+using WitchHutSearch.Extensions;
 using WitchHutSearch.Generator;
 
 namespace WitchHutSearch.Biomes;
 
 public interface ISwampBiomeVerifier
 {
-    bool IsInSwampBiome(Pos pos);
+    bool IsInSwampBiome(Vector2 pos);
 }
 
 public class SwampBiomeVerifier : ISwampBiomeVerifier
@@ -17,6 +18,6 @@ public class SwampBiomeVerifier : ISwampBiomeVerifier
         _generator = generator;
     }
 
-    public bool IsInSwampBiome(Pos pos)
+    public bool IsInSwampBiome(Vector2 pos)
         => _generator.IsSwamp(pos);
 }

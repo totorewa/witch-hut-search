@@ -15,8 +15,8 @@ namespace WitchHutSearch.Cli;
 [Command]
 public class WitchHutSearchCommand : ICommand
 {
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ILogger _logger;
+    private ILoggerFactory _loggerFactory;
+    private ILogger _logger;
 
     [CommandParameter(0, Description = "Number of huts.", Validators = new[] { typeof(HutsParameterValidator) })]
     public int Huts { get; init; }
@@ -33,14 +33,16 @@ public class WitchHutSearchCommand : ICommand
     [CommandOption("out", 'o', Description = "Output file for writing locations to.")]
     public string? Output { get; init; }
 
-    public WitchHutSearchCommand()
-    {
-        _loggerFactory = LoggerFactory.Create(b => b.AddSimpleConsole());
-        _logger = _loggerFactory.CreateLogger("Main");
-    }
+    [CommandOption("verbose", 'v', Description = "Detailed output")]
+    public bool Verbose { get; init; } = false;
 
     public async ValueTask ExecuteAsync(IConsole console)
     {
+        _loggerFactory = LoggerFactory.Create(b =>
+            b.AddSimpleConsole()
+                .SetMinimumLevel(Verbose ? LogLevel.Trace : LogLevel.Information));
+        _logger = _loggerFactory.CreateLogger("Main");
+        
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 

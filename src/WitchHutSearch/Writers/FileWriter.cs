@@ -1,5 +1,4 @@
-﻿using CliFx.Infrastructure;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using WitchHutSearch.Searcher;
 
 namespace WitchHutSearch.Writers;
@@ -28,8 +27,8 @@ public sealed class FileWriter : IHutWriter
     {
         await _stream.WriteLineAsync(
             _fileType == FileType.Csv
-                ? $"{centre.Huts},{centre.X},{centre.Z}"
-                : $"{centre.Huts} huts at {centre.X}, {centre.Z}");
+                ? $"{centre.Huts},{centre.X},{centre.Y}"
+                : $"{centre.Huts} huts at {centre.X}, {centre.Y}");
         return true;
     }
 

@@ -19,7 +19,7 @@ public sealed class ConsoleWriter : IHutWriter
 
     public Task<bool> WriteAsync(HutCentre centre)
     {
-        _console.Output.WriteLine($"{centre.Huts} huts at {centre.X}, {centre.Z}");
+        _console.Output.WriteLine($"{centre.Huts} huts at {centre.X}, {centre.Y}");
         return Task.FromResult(true);
     }
 
