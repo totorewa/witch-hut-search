@@ -13,12 +13,12 @@ public class SearchRequirements
 
     public IEnumerable<SearchRange> CreateSearchRanges(int count)
     {
-        var sectorSize = (int)Math.Ceiling((double)Range / count);
-        var adjustedRange = sectorSize * count;
-        var adjustedMin = -adjustedRange;
-        var reqMin = -Range;
-        var rangeZ = Range * 2;
+        var rangeSector = (int)Math.Ceiling((double)Range / count);
+        var sectorSize = rangeSector * 2;
+        var minX = -(rangeSector * count);
+        var minZ = -Range;
+        var depthZ = Range * 2;
         for (var i = 0; i < count; i++)
-            yield return new SearchRange(adjustedMin + sectorSize * i, reqMin, sectorSize - 1, rangeZ);
+            yield return new SearchRange(minX + sectorSize * i, minZ, sectorSize - (i == count - 1 ? 0 : 1), depthZ);
     }
 }
