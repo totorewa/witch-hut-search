@@ -8,7 +8,7 @@ namespace WitchHutSearch.Generator;
 
 public class BiomeGenerator
 {
-    public WorldSeed Seed { get; }
+    public ulong Seed { get; }
     public DoublePerlinNoise Shift { get; set; }
     public DoublePerlinNoise Temperature { get; set; }
     public DoublePerlinNoise Humidity { get; set; }
@@ -20,7 +20,7 @@ public class BiomeGenerator
     public BiomeGenerator(ulong seed)
     {
         Spline = CreateBiomeNoise();
-        Seed = new WorldSeed(seed);
+        Seed = seed;
 
         var pxr = new Xoroshiro128(seed);
         var xlo = (ulong)pxr.NextLong();

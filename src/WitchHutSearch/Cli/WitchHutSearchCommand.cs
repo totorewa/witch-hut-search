@@ -15,8 +15,8 @@ namespace WitchHutSearch.Cli;
 [Command]
 public class WitchHutSearchCommand : ICommand
 {
-    private ILoggerFactory _loggerFactory;
-    private ILogger _logger;
+    private ILoggerFactory? _loggerFactory;
+    private ILogger? _logger;
 
     [CommandParameter(0, Description = "Number of huts.", Validators = new[] { typeof(HutsParameterValidator) })]
     public int Huts { get; init; }
@@ -103,6 +103,6 @@ public class WitchHutSearchCommand : ICommand
 
     private IHutWriter GetAppropriateWriter(IConsole console)
         => string.IsNullOrWhiteSpace(Output)
-            ? new ConsoleWriter(_loggerFactory.CreateLogger("Output"), console)
-            : new FileWriter(_loggerFactory.CreateLogger("Output"), Output);
+            ? new ConsoleWriter(_loggerFactory!.CreateLogger("Output"), console)
+            : new FileWriter(_loggerFactory!.CreateLogger("Output"), Output);
 }

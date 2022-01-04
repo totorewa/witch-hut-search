@@ -31,7 +31,7 @@ public class SearchWorker
     public void Search(SearchRange range)
     {
         var locator = FeatureLocator.WitchHut;
-        var seed = _generator.Seed.Seed;
+        var seed = _generator.Seed;
         var target = _collation.Requirements.Count;
         bool preloaded;
 
