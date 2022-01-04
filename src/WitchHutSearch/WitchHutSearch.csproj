@@ -15,6 +15,9 @@
         <RepositoryUrl>https://github.com/totorewa/witch-hut-search</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <ApplicationIcon>..\..\assets\witchhutsearch.ico</ApplicationIcon>
+        <PackageVersion>1.0.1</PackageVersion>
+        <AssemblyVersion>1.0.1</AssemblyVersion>
+        <FileVersion>1.0.1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
