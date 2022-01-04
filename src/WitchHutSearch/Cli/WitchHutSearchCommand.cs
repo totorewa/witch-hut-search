@@ -28,7 +28,7 @@ public class WitchHutSearchCommand : ICommand
     public int Blocks { get; init; } = 128000;
 
     [CommandOption("threads", 't', Description = "Number of threads to search with.")]
-    public int ThreadCount { get; init; } = Environment.ProcessorCount * 2;
+    public int ThreadCount { get; init; } = Math.Min(Environment.ProcessorCount, 4);
 
     [CommandOption("out", 'o', Description = "Output file for writing locations to.")]
     public string? Output { get; init; }
@@ -42,7 +42,7 @@ public class WitchHutSearchCommand : ICommand
             b.AddSimpleConsole()
                 .SetMinimumLevel(Verbose ? LogLevel.Trace : LogLevel.Information));
         _logger = _loggerFactory.CreateLogger("Main");
-        
+
         var stopwatch = new Stopwatch();
         stopwatch.Start();
 

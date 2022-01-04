@@ -17,7 +17,7 @@ PARAMETERS
 OPTIONS
 * -s|--seed         Seed to search on.
   -b|--blocks       Number of blocks to search in each direction. Default: "128000".
-  -t|--threads      Number of threads to search with. Default: # of cores x 2.
+  -t|--threads      Number of threads to search with. Default: 4.
   -o|--out          Output file for writing locations to.
 ```
 
